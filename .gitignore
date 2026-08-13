@@ -1,0 +1,21 @@
+# Compiled binaries
+/relay
+/relay-tools
+/bin/
+
+# SQLite databases (durable local state is not committed)
+*.db
+*.db-wal
+*.db-shm
+
+# Telemetry exports
+/traces/
+
+# Test / coverage artifacts
+*.test
+coverage.out
+coverage.html
+
+# Local environment / editor
+.env
+.DS_Store

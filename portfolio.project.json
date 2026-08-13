@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "collection": "five-decisions",
+  "id": "relay",
+  "title": "Relay",
+  "decision": "What should survive a failure?",
+  "learningOrigin": "2026-07",
+  "buildStarted": "2026-08-13",
+  "status": "building",
+  "summary": "A reliability lab for checkpointed, observable agent workflows.",
+  "capabilities": ["durable checkpoints", "fault injection", "human escalation"],
+  "evidence": [],
+  "links": {
+    "repository": null,
+    "demo": null,
+    "methodology": null
+  }
+}

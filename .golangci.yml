@@ -1,0 +1,47 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: standard
+  enable:
+    - depguard
+    - misspell
+    - unconvert
+    - bodyclose
+    - sqlclosecheck
+    - rowserrcheck
+    - nolintlint
+  settings:
+    depguard:
+      rules:
+        # The domain core and planner are the hexagon interior: they speak only
+        # through the ports in internal/core and must not reach for any adapter
+        # technology (persistence, transport, MCP, telemetry).
+        domain-core:
+          files:
+            - "**/internal/core/**"
+            - "**/internal/planner/**"
+          deny:
+            - pkg: "database/sql"
+              desc: "hexagonal boundary: the domain core is persistence-agnostic"
+            - pkg: "net/http"
+              desc: "hexagonal boundary: the domain core is transport-agnostic"
+            - pkg: "html/template"
+              desc: "hexagonal boundary: the domain core does not render UI"
+            - pkg: "github.com/modelcontextprotocol/go-sdk"
+              desc: "hexagonal boundary: the domain core must not depend on MCP types"
+            - pkg: "go.opentelemetry.io/otel"
+              desc: "hexagonal boundary: the domain core must not depend on telemetry"
+            - pkg: "modernc.org/sqlite"
+              desc: "hexagonal boundary: the domain core must not depend on the SQLite driver"
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/diegoaleyvag/relay

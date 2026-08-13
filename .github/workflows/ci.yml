@@ -1,0 +1,46 @@
+# CI gate for Relay. Authored for completeness — this repository is built and
+# reviewed locally and is NOT pushed, so this workflow documents the gate rather
+# than running remotely. It builds offline against the module cache, enforces
+# the hexagonal boundary, lints, and runs the race detector plus a fuzz smoke.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CGO_ENABLED: "0"
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.5"
+          check-latest: false
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Hexagonal boundary
+        run: make boundary
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v2.12.2
+
+      - name: Test (race)
+        run: go test -race -count=1 ./...
+
+      - name: Fuzz smoke
+        run: go test -run='^$' -fuzz=FuzzParseToolResponse -fuzztime=10s ./internal/mcp
