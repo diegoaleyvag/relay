@@ -195,7 +195,13 @@ func (e *Engine) drive(ctx context.Context, s core.RunState) (core.RunState, err
 					return e.commit(ctx, s, core.Reduce(s, core.InCancel{Reason: core.CodeCancelled}, e.env()))
 				}
 			}
-			s.Phase = core.PhaseRunning // in-memory; the retry's result re-commits the phase
+			// Commit the wake as a durable backoff→running transition so the
+			// checkpoint chain records a legal edge (not backoff→<result>).
+			ns, err := e.commit(ctx, s, core.Reduce(s, core.InWake{}, e.env()))
+			if err != nil {
+				return s, err
+			}
+			s = ns
 
 		case core.PhaseRunning:
 			ns, err := e.step(ctx, s)
@@ -224,6 +230,13 @@ func (e *Engine) step(ctx context.Context, s core.RunState) (core.RunState, erro
 	}
 
 	if a.Kind != core.ActionCallTool {
+		return e.commit(ctx, s, core.Reduce(s, core.InAction{Action: a}, e.env()))
+	}
+
+	// Fail closed on a non-allowlisted tool BEFORE any invocation, for both
+	// read-only and side-effecting tools. The reducer's dispatch gate produces
+	// the terminal PERMISSION_DENIED.
+	if !a.Tool.Allowlisted() {
 		return e.commit(ctx, s, core.Reduce(s, core.InAction{Action: a}, e.env()))
 	}
 

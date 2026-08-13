@@ -29,6 +29,7 @@ const (
 	EventToolSucceeded     EventKind = "tool_succeeded"
 	EventToolFailed        EventKind = "tool_failed"
 	EventBackoffScheduled  EventKind = "backoff_scheduled"
+	EventWoke              EventKind = "woke"
 	EventSideEffectIntent  EventKind = "side_effect_intent"
 	EventSideEffectConfirm EventKind = "side_effect_confirmed"
 	EventDuplicateSuppress EventKind = "duplicate_suppressed"

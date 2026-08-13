@@ -354,6 +354,7 @@ func TestReduceTotality(t *testing.T) {
 		InToolResult{Call: ToolCall{Tool: ToolReadSource}, Err: NewError(CodeTimeout, "x")},
 		InHuman{Decision: DecisionApprove},
 		InCancel{Reason: CodeCancelled},
+		InWake{},
 	}
 	for _, ph := range phases {
 		for _, in := range inputs {

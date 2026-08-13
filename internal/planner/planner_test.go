@@ -12,6 +12,7 @@ func state(sources []core.SourceRef, step core.StepIndex, requireReview bool) co
 	s := core.NewRun("run1", 7, requireReview, time.Time{}, time.Unix(0, 0))
 	s.Phase = core.PhaseRunning
 	s.Version = 1
+	s.Listed = true
 	s.Sources = sources
 	s.Step = step
 	return s

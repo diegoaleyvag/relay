@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/diegoaleyvag/relay/internal/clock"
@@ -27,10 +28,33 @@ type relayRunner struct {
 	toolPort core.ToolPort // shared MCP client (fault-free)
 	prov     *telemetry.Provider
 	cfg      engine.Config
+
+	mu       sync.Mutex
+	inFlight map[core.RunID]bool // single-driver lease per run
 }
 
 func newRunner(repo core.Repository, toolPort core.ToolPort, prov *telemetry.Provider, cfg engine.Config) *relayRunner {
-	return &relayRunner{repo: repo, toolPort: toolPort, prov: prov, cfg: cfg}
+	return &relayRunner{repo: repo, toolPort: toolPort, prov: prov, cfg: cfg, inFlight: map[core.RunID]bool{}}
+}
+
+// acquire grants a single-driver lease for a run; release frees it. Concurrent
+// drivers of the same run are prevented, so a run's tool calls are never issued
+// twice in parallel (durable exactly-once holds regardless, via the version CAS,
+// but the lease avoids redundant work and noisy conflicts).
+func (r *relayRunner) acquire(id core.RunID) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.inFlight[id] {
+		return false
+	}
+	r.inFlight[id] = true
+	return true
+}
+
+func (r *relayRunner) release(id core.RunID) {
+	r.mu.Lock()
+	delete(r.inFlight, id)
+	r.mu.Unlock()
 }
 
 // engineWith builds an engine whose tool port is traced and (optionally) faulted.
@@ -87,8 +111,13 @@ func (r *relayRunner) Cancel(ctx context.Context, id core.RunID) error {
 	return err
 }
 
-// drive runs an engine to completion under a root run span.
+// drive runs an engine to completion under a root run span, holding the run's
+// single-driver lease. If the run is already being driven, it returns at once.
 func (r *relayRunner) drive(eng *engine.Engine, id core.RunID, run core.RunState, scenario string) {
+	if !r.acquire(id) {
+		return
+	}
+	defer r.release(id)
 	ctx, end := telemetry.StartRunSpan(context.Background(), r.prov.Tracer, run, scenario)
 	final, err := eng.Run(ctx, id)
 	if err != nil {

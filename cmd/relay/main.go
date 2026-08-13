@@ -23,6 +23,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/diegoaleyvag/relay/internal/core"
 	"github.com/diegoaleyvag/relay/internal/corpus"
 	"github.com/diegoaleyvag/relay/internal/engine"
 	"github.com/diegoaleyvag/relay/internal/mcp"
@@ -60,6 +61,14 @@ func main() {
 		log.Fatalf("mcp in-memory: %v", err)
 	}
 	defer func() { _ = closeMCP() }()
+	// Defense-in-depth: reject any non-allowlisted tool at the adapter, before a
+	// CallTool is ever issued (fail closed).
+	toolPort.Allow = map[core.ToolName]bool{
+		core.ToolListSources:   true,
+		core.ToolReadSource:    true,
+		core.ToolRecordFinding: true,
+		core.ToolRequestReview: true,
+	}
 
 	// Telemetry.
 	prov, shutdownTel, err := telemetry.NewProvider(ctx, telemetry.Config{Mode: tracesMode, Writer: os.Stderr})

@@ -74,6 +74,7 @@ type RunState struct {
 
 	RequireReview bool `json:"require_review"` // run must escalate before completing
 
+	Listed   bool         `json:"listed"`             // list_sources has completed (distinct from an empty result)
 	Sources  []SourceRef  `json:"sources,omitempty"`  // populated after list_sources
 	Findings []FindingRef `json:"findings,omitempty"` // preserved partial results
 	Skipped  []SourceRef  `json:"skipped,omitempty"`  // sources abandoned (e.g. malformed)

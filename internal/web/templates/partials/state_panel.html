@@ -1,0 +1,37 @@
+{{/*
+    state_panel.html renders the #state fragment: current phase, retry
+    budget, the next permitted scripted plan step, any escalation, and the
+    resume/cancel/approve/reject controls. Data: ViewState.
+
+    It is independently renderable (GET /runs/{id}/state serves it directly)
+    and self-refreshes via HTMX polling — but only while the run is
+    non-terminal, so polling stops on its own once there is nothing left to
+    change.
+*/}}
+{{define "state_panel"}}
+<div id="state"
+     {{if not .Terminal}}hx-get="/runs/{{.RunID}}/state" hx-trigger="every 1s" hx-swap="outerHTML"{{end}}>
+
+  <p class="phase-line">
+    Phase: <span class="badge badge-{{.Phase}}">{{.PhaseLabel}}</span>
+  </p>
+
+  <p class="budget-line">
+    Step {{.Step}} &middot; Attempt {{.Attempt}} &middot; Retries used {{.RetriesUsed}} &middot; Checkpoint version {{.Version}}
+  </p>
+
+  {{if .NextStep}}
+  <p class="next-step">
+    Next {{.NextStep.Label}}: <strong>{{.NextStep.Kind}}</strong>{{if .NextStep.Tool}} (tool: {{.NextStep.Tool}}){{end}}
+  </p>
+  {{end}}
+
+  {{if .LastErrorCode}}
+  <p class="last-error">Last error: <code>{{.LastErrorCode}}</code> ({{.LastErrorClass}})</p>
+  {{end}}
+
+  {{if .Escalation}}{{template "escalation" .Escalation}}{{end}}
+
+  {{template "review_controls" .}}
+</div>
+{{end}}

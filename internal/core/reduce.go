@@ -52,11 +52,18 @@ type InHuman struct{ Decision HumanDecision }
 // InCancel cancels a non-terminal run (ctx cancel / deadline).
 type InCancel struct{ Reason ErrorCode }
 
+// InWake wakes a run from backoff back to running once its delay has elapsed.
+// It is committed as a durable transition so the checkpoint chain records the
+// legal backoff→running edge rather than jumping from backoff to the retry's
+// result phase.
+type InWake struct{}
+
 func (InStart) isInput()      {}
 func (InAction) isInput()     {}
 func (InToolResult) isInput() {}
 func (InHuman) isInput()      {}
 func (InCancel) isInput()     {}
+func (InWake) isInput()       {}
 
 // Effect is a side action the engine must perform after persisting the result.
 type Effect interface{ isEffect() }
@@ -111,6 +118,8 @@ func Reduce(s RunState, in Input, env Env) Result {
 		return reduceHuman(s, v.Decision, env)
 	case InCancel:
 		return reduceCancel(s, v.Reason, env)
+	case InWake:
+		return reduceWake(s, env)
 	default:
 		return illegal(s, env, "unknown input")
 	}
@@ -140,6 +149,21 @@ func (r *Result) event(s RunState, kind EventKind, summary string, ev any) {
 		RunID: s.ID, Version: r.State.Version, Kind: kind,
 		Summary: summary, Evidence: evidence(ev), At: s.UpdatedAt,
 	})
+}
+
+// failPending resolves any in-flight side-effect intent on n: it clears Pending
+// and returns a FAILED ledger row (or nil if there was none), so an abandoned
+// intent never lingers as a dangling INTENT in the ledger.
+func failPending(n *RunState, env Env) *SideEffectRow {
+	if n.Pending == nil {
+		return nil
+	}
+	row := &SideEffectRow{
+		Key: n.Pending.Key, RunID: n.ID, Tool: n.Pending.Tool, Status: EffectFailed,
+		RequestHash: n.Pending.InputHash, Attempt: n.Attempt, At: env.Now,
+	}
+	n.Pending = nil
+	return row
 }
 
 // classify applies policy overrides on top of the code's default class.
@@ -246,6 +270,7 @@ func reduceToolSuccess(s RunState, call ToolCall, res ToolResult, env Env) Resul
 			return reduceToolError(s, call, NewError(CodeMalformed, "list_sources output unparseable"), env)
 		}
 		n := begin(s, env)
+		n.Listed = true
 		n.Sources = append([]SourceRef(nil), out.Sources...)
 		n.Step = s.Step + 1
 		n.Attempt = 0
@@ -370,14 +395,7 @@ func retryOrExhaust(s RunState, call ToolCall, err *RelayError, env Env) Result 
 		n.Phase = PhaseFailed
 		n.LastError = NewError(CodeRetriesExhausted,
 			fmt.Sprintf("retries exhausted after %s", err.Code)).WithDetail("last_code", string(err.Code))
-		var effect *SideEffectRow
-		if n.Pending != nil {
-			effect = &SideEffectRow{
-				Key: n.Pending.Key, RunID: s.ID, Tool: n.Pending.Tool, Status: EffectFailed,
-				RequestHash: n.Pending.InputHash, Attempt: s.Attempt, At: env.Now,
-			}
-			n.Pending = nil
-		}
+		effect := failPending(&n, env)
 		r := Result{State: n, Durable: true, ActionKind: ActionCallTool, Tool: call.Tool, Effect: effect}
 		r.event(s, EventToolFailed, "tool failed (retryable)",
 			map[string]any{"tool": call.Tool, "code": err.Code, "injected": err.Injected(), "attempt": s.Attempt})
@@ -410,12 +428,12 @@ func skipSource(s RunState, call ToolCall, err *RelayError, env Env) Result {
 	}
 	src := s.Sources[i]
 	n := begin(s, env)
-	n.Pending = nil
+	effect := failPending(&n, env) // resolve any in-flight side-effect intent
 	n.Attempt = 0
 	n.Skipped = append(n.Skipped, src)
 	n.Step = StepRead(i + 1)
 	n.LastError = err
-	r := Result{State: n, Durable: true, ActionKind: ActionCallTool, Tool: call.Tool}
+	r := Result{State: n, Durable: true, ActionKind: ActionCallTool, Tool: call.Tool, Effect: effect}
 	r.event(s, EventToolFailed, "tool failed (skippable)",
 		map[string]any{"tool": call.Tool, "code": err.Code, "injected": err.Injected()})
 	r.event(s, EventSourceSkipped, "source skipped",
@@ -427,14 +445,7 @@ func terminalFail(s RunState, err *RelayError, env Env) Result {
 	n := begin(s, env)
 	n.Phase = PhaseFailed
 	n.LastError = err
-	var effect *SideEffectRow
-	if n.Pending != nil {
-		effect = &SideEffectRow{
-			Key: n.Pending.Key, RunID: s.ID, Tool: n.Pending.Tool, Status: EffectFailed,
-			RequestHash: n.Pending.InputHash, Attempt: s.Attempt, At: env.Now,
-		}
-		n.Pending = nil
-	}
+	effect := failPending(&n, env)
 	r := Result{State: n, Durable: true, ActionKind: ActionFail, Effect: effect}
 	r.event(s, EventToolFailed, "tool failed (terminal)",
 		map[string]any{"code": err.Code, "injected": err.Injected()})
@@ -445,7 +456,7 @@ func terminalFail(s RunState, err *RelayError, env Env) Result {
 func escalatePermission(s RunState, call ToolCall, err *RelayError, env Env) Result {
 	key := DeriveKey(s.ID, s.Step, ToolRequestReview)
 	n := begin(s, env)
-	n.Pending = nil
+	effect := failPending(&n, env) // resolve the abandoned record intent, if any
 	n.Phase = PhaseAwaitingHuman
 	n.LastError = err
 	n.Review = &HumanReviewRef{
@@ -453,7 +464,7 @@ func escalatePermission(s RunState, call ToolCall, err *RelayError, env Env) Res
 		Status: ReviewPending, Step: s.Step,
 	}
 	r := Result{
-		State: n, Durable: true, ActionKind: ActionCallTool, Tool: call.Tool,
+		State: n, Durable: true, ActionKind: ActionCallTool, Tool: call.Tool, Effect: effect,
 		Review: &ReviewRow{
 			RunID: s.ID, Key: key, Reason: n.Review.Reason, Severity: "high",
 			Status: ReviewPending, At: env.Now,
@@ -509,15 +520,20 @@ func reduceCancel(s RunState, reason ErrorCode, env Env) Result {
 	n := begin(s, env)
 	n.Phase = PhaseCancelled
 	n.LastError = NewError(reason, "run cancelled")
-	var effect *SideEffectRow
-	if n.Pending != nil {
-		effect = &SideEffectRow{
-			Key: n.Pending.Key, RunID: s.ID, Tool: n.Pending.Tool, Status: EffectFailed,
-			RequestHash: n.Pending.InputHash, Attempt: s.Attempt, At: env.Now,
-		}
-		n.Pending = nil
-	}
+	effect := failPending(&n, env)
 	r := Result{State: n, Durable: true, ActionKind: ActionWait, Effect: effect}
 	r.event(s, EventRunCancelled, "run cancelled", map[string]any{"code": reason})
+	return r
+}
+
+func reduceWake(s RunState, env Env) Result {
+	if s.Phase != PhaseBackoff {
+		return illegal(s, env, "wake requires backoff")
+	}
+	n := begin(s, env)
+	n.Phase = PhaseRunning
+	n.NextWakeAt = time.Time{}
+	r := Result{State: n, Durable: true, ActionKind: ActionWait}
+	r.event(s, EventWoke, "woke from backoff to retry", map[string]any{"attempt": n.Attempt})
 	return r
 }

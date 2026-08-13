@@ -1,0 +1,24 @@
+{{/*
+    review_controls.html renders the resume/cancel/approve/reject controls.
+    Data: ViewState. Each control is enabled only when the corresponding
+    Can* field is true — computed server-side from the run's current phase
+    by the same resumeLegal/cancelLegal/reviewLegal functions the POST
+    handlers re-check before acting, so the buttons never promise an action
+    the server would refuse.
+*/}}
+{{define "review_controls"}}
+<div class="controls">
+  <form hx-post="/runs/{{.RunID}}/actions/resume" hx-target="#state" hx-swap="outerHTML" class="inline-form">
+    <button type="submit" {{if not .CanResume}}disabled{{end}}>Resume</button>
+  </form>
+  <form hx-post="/runs/{{.RunID}}/actions/cancel" hx-target="#state" hx-swap="outerHTML" class="inline-form">
+    <button type="submit" {{if not .CanCancel}}disabled{{end}}>Cancel</button>
+  </form>
+  <form hx-post="/runs/{{.RunID}}/review/approve" hx-target="#state" hx-swap="outerHTML" class="inline-form">
+    <button type="submit" {{if not .CanApprove}}disabled{{end}}>Approve</button>
+  </form>
+  <form hx-post="/runs/{{.RunID}}/review/reject" hx-target="#state" hx-swap="outerHTML" class="inline-form">
+    <button type="submit" {{if not .CanReject}}disabled{{end}}>Reject</button>
+  </form>
+</div>
+{{end}}

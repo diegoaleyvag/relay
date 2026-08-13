@@ -1,0 +1,12 @@
+{{/*
+    escalation.html renders the escalation reason when a run is parked
+    awaiting human review. Data: *ViewEscalation.
+*/}}
+{{define "escalation"}}
+<div class="escalation">
+  <h3>Awaiting human review</h3>
+  <p>Reason: {{.Reason}}</p>
+  <p>Severity: {{.Severity}}</p>
+  <p>Review id: {{.ReviewID}} (status: {{.Status}})</p>
+</div>
+{{end}}

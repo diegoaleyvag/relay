@@ -1,0 +1,33 @@
+{{/*
+    layout.html defines the shared HTML shell every full page (index.html,
+    run.html) wraps its own body markup in.
+
+    html/template's template set is a single flat namespace shared across
+    every parsed file: if two files each used "{{define "content"}}" to mark
+    their own body, the second one parsed would silently replace the first
+    (Go's template/text define semantics, not an error) and one page would
+    render the other's content. To avoid that, there is no single "layout"
+    template that calls back into a page-supplied block. Instead this file
+    defines two small, uniquely named fragments — "layout_head" and
+    "layout_foot" — and each page template wraps its own body between them.
+*/}}
+{{define "layout_head"}}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay control room</title>
+<link rel="stylesheet" href="/static/app.css">
+<script src="/static/htmx.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">Relay control room</a>
+</header>
+<main>
+{{end}}
+{{define "layout_foot"}}
+</main>
+</body>
+</html>
+{{end}}

@@ -1,0 +1,51 @@
+{{/* index.html renders the run list and the new-run form. Data: IndexPage. */}}
+{{define "index"}}{{template "layout_head" .}}
+<section class="panel">
+  <h1>Runs</h1>
+  {{if .Runs}}
+  <table class="runs">
+    <thead>
+      <tr>
+        <th>Run</th>
+        <th>Scenario</th>
+        <th>Phase</th>
+        <th>Findings</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Runs}}
+      <tr>
+        <td><a href="/runs/{{.ID}}">{{.ID}}</a></td>
+        <td>{{.Scenario}}</td>
+        <td><span class="badge badge-{{.Phase}}">{{.PhaseLabel}}</span></td>
+        <td>{{.Findings}}</td>
+        <td>{{.CreatedAt}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+  {{else}}
+  <p class="empty">No runs yet.</p>
+  {{end}}
+</section>
+
+<section class="panel">
+  <h2>Start a new run</h2>
+  <form method="post" action="/runs" class="new-run">
+    <label for="scenario">Scenario</label>
+    <select id="scenario" name="scenario" required>
+      {{range .Scenarios}}
+      <option value="{{.Name}}">{{.Label}} &mdash; {{.Description}}</option>
+      {{end}}
+    </select>
+
+    <label class="checkbox">
+      <input type="checkbox" name="require_review" value="true">
+      Require human review before completion
+    </label>
+
+    <button type="submit">Start run</button>
+  </form>
+</section>
+{{template "layout_foot" .}}{{end}}

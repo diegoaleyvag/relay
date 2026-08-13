@@ -260,6 +260,27 @@ func twoSources() []core.SourceRef {
 
 // --- tests --------------------------------------------------------------
 
+func TestEngineZeroSourcesTerminates(t *testing.T) {
+	// An empty source list must complete immediately, not loop forever. A context
+	// deadline turns a regression (infinite re-list) into a fast failure.
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	repo := newMemRepo()
+	tools := &fakeTools{sources: []core.SourceRef{}, failTimes: map[int]int{}}
+	e := newEngine(repo, tools, DefaultConfig())
+
+	final, err := e.StartRun(ctx, core.NewRun("run0", 7, false, time.Time{}, time.Unix(0, 0)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if final.Phase != core.PhaseSucceeded {
+		t.Fatalf("empty corpus should complete, got %v", final.Phase)
+	}
+	if fs, _ := repo.Findings(ctx, "run0"); len(fs) != 0 {
+		t.Fatalf("expected 0 findings, got %d", len(fs))
+	}
+}
+
 func TestEngineHappyPath(t *testing.T) {
 	ctx := context.Background()
 	repo := newMemRepo()

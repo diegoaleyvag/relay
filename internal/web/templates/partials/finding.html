@@ -1,0 +1,11 @@
+{{/*
+    finding.html renders one preserved finding's metadata only: its source id
+    and durable finding id. Data: ViewFinding. It never renders a claim or
+    evidence field — ViewFinding has none.
+*/}}
+{{define "finding"}}
+<li class="finding">
+  <span class="source">source: {{.SourceID}}</span>
+  <span class="finding-id">finding: {{.FindingID}}</span>
+</li>
+{{end}}

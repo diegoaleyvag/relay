@@ -28,8 +28,10 @@ func (p *Deterministic) Kind() string { return core.PlannerKind }
 // Next returns the next action for the given state. It never mutates the state
 // and never performs I/O.
 func (p *Deterministic) Next(s core.RunState) (core.Action, error) {
-	// 1. List the sources (once).
-	if s.Sources == nil {
+	// 1. List the sources (once). Guard on Listed, not len(Sources): an empty
+	// corpus legitimately yields zero sources, and treating that as "not listed"
+	// would re-issue list_sources forever.
+	if !s.Listed {
 		limit := p.Limit
 		if limit <= 0 {
 			limit = 100

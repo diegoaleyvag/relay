@@ -1,0 +1,11 @@
+{{/* run.html renders the full single-run timeline page. Data: RunPage. */}}
+{{define "run"}}{{template "layout_head" .}}
+<section class="panel">
+  <h1>Run {{.RunID}}</h1>
+  {{template "state_panel" .State}}
+</section>
+
+<section class="panel">
+  {{template "timeline" .Timeline}}
+</section>
+{{template "layout_foot" .}}{{end}}

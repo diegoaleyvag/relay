@@ -1,0 +1,18 @@
+{{/*
+    attempt_row.html renders one redacted event as a timeline row. Data:
+    ViewAttempt. Shows a "fault injected here" marker when the event's
+    evidence flagged the failure as deliberately injected by the fault
+    harness (never silent).
+*/}}
+{{define "attempt_row"}}
+<li class="attempt attempt-{{.Kind}}">
+  <span class="seq">#{{.Seq}}</span>
+  <span class="version">v{{.Version}}</span>
+  <span class="kind">{{.Kind}}</span>
+  <span class="summary">{{.Summary}}</span>
+  {{if .Tool}}<span class="tool">tool: {{.Tool}}</span>{{end}}
+  {{if .Code}}<span class="code">code: {{.Code}}</span>{{end}}
+  {{if .Injected}}<span class="injected-marker">fault injected here</span>{{end}}
+  <time>{{.At}}</time>
+</li>
+{{end}}
