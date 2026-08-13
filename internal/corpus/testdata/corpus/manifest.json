@@ -1,0 +1,60 @@
+{
+  "version": "1",
+  "max_source_bytes": 65536,
+  "sources": [
+    {
+      "id": "src-001",
+      "title": "Urban Heat Islands: Why Cities Run Warmer",
+      "path": "sources/src-001-urban-heat-islands.md",
+      "media_type": "text/markdown",
+      "bytes": 2106,
+      "sha256": "f0bfbc95fbd24c6e8b979d002a9afb8590ac1d895f7e40685f057a8c4e8bb668",
+      "tags": ["climate", "urban-planning", "heat"]
+    },
+    {
+      "id": "src-002",
+      "title": "Tidal Energy: Harnessing the Rhythm of the Ocean",
+      "path": "sources/src-002-tidal-energy.md",
+      "media_type": "text/markdown",
+      "bytes": 2192,
+      "sha256": "51c294caa3d4fb6426250af6667c799dbe560478e6cf7e363c16f48564823248",
+      "tags": ["energy", "renewable", "ocean"]
+    },
+    {
+      "id": "src-003",
+      "title": "Seed Banks and the Quiet Work of Conservation",
+      "path": "sources/src-003-seed-banks.txt",
+      "media_type": "text/plain",
+      "bytes": 2323,
+      "sha256": "8cf341e9bf48bef7e2968266316c8a985ba1b8e587773b470486c0448ff93323",
+      "tags": ["agriculture", "biodiversity", "conservation"]
+    },
+    {
+      "id": "src-004",
+      "title": "Restoring Peatlands: Small Wetlands With an Outsized Carbon Role",
+      "path": "sources/src-004-peatland-restoration.md",
+      "media_type": "text/markdown",
+      "bytes": 2211,
+      "sha256": "4fa94ddd3b005378ec83d261414fba311011de0abab860b0c43b83d551a52354",
+      "tags": ["climate", "wetlands", "carbon"]
+    },
+    {
+      "id": "src-005",
+      "title": "Permeable Pavement: Letting Rain Through Instead of Off",
+      "path": "sources/src-005-permeable-pavement.txt",
+      "media_type": "text/plain",
+      "bytes": 2365,
+      "sha256": "8872cdf3326491d29792ce3e703632590a018581ec90732f4a5aa1a52f11c895",
+      "tags": ["urban-planning", "water", "infrastructure"]
+    },
+    {
+      "id": "src-006",
+      "title": "Citizen Science Air Quality Monitoring",
+      "path": "sources/src-006-citizen-air-quality.json",
+      "media_type": "application/json",
+      "bytes": 2144,
+      "sha256": "d1fea669d408ccd12635758efbb9407dcd6840e7c9b364f69147621a83f79937",
+      "tags": ["air-quality", "citizen-science", "monitoring"]
+    }
+  ]
+}

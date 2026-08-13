@@ -1,0 +1,29 @@
+{
+  "title": "Citizen Science Air Quality Monitoring",
+  "overview": "Citizen science air quality monitoring uses low-cost sensors operated by volunteers to fill spatial gaps left by sparse networks of official reference-grade air quality stations. A city might operate only a handful of regulatory monitors, while a volunteer network can deploy dozens of sensors across neighborhoods, parks, and roadsides.",
+  "sensor_types": [
+    {
+      "name": "optical particle counters",
+      "measures": "particulate matter (PM2.5, PM10)",
+      "notes": "estimate particle concentration by scattering light off airborne particles; accuracy depends on humidity and particle composition"
+    },
+    {
+      "name": "electrochemical cells",
+      "measures": "gases such as ozone, nitrogen dioxide, and carbon monoxide",
+      "notes": "react with the target gas to produce a small electrical current proportional to concentration"
+    },
+    {
+      "name": "metal-oxide sensors",
+      "measures": "a broad mix of volatile compounds",
+      "notes": "inexpensive and simple but cross-sensitive to many gases at once, which complicates interpretation"
+    }
+  ],
+  "data_quality_practices": [
+    "co-locating volunteer sensors next to a reference-grade monitor for a calibration period before independent deployment",
+    "applying humidity and temperature corrections derived from the co-location period",
+    "flagging or discarding readings that fall outside a sensor's specified operating range",
+    "cross-checking neighboring sensors against one another to catch drift or fouling"
+  ],
+  "community_value": "Beyond raw data, these networks build local expertise: volunteers learn to read pollution patterns tied to traffic, weather, or nearby industry, and dense coverage can reveal hyperlocal hotspots that a sparse official network would simply average away.",
+  "limitations": "Low-cost sensors drift over time, respond differently across manufacturers, and are more sensitive to humidity swings than reference instruments, so most programs treat their output as a relative, exploratory signal rather than a regulatory-grade measurement."
+}

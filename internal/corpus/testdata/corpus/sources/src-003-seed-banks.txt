@@ -1,0 +1,46 @@
+Seed Banks and the Quiet Work of Conservation
+
+A seed bank is a facility that collects and stores seeds under controlled
+conditions to preserve plant genetic diversity for the future. Most operate
+on a simple principle: dry seeds out to a low moisture content, then hold
+them at cold, stable temperatures to slow the biochemical processes that
+would otherwise cause them to age and lose the ability to germinate.
+
+Why Diversity Matters
+
+Modern agriculture leans heavily on a small number of high-yield crop
+varieties, which makes food systems efficient but also narrows the genetic
+pool available to breeders. Older or regional varieties often carry traits
+bred out of commercial lines long ago, such as tolerance to drought,
+resistance to a particular pest, or the ability to grow in poor soil. Seed
+banks preserve that variation so breeders can draw on it later, whether to
+respond to a new plant disease or to adapt crops to a changing climate.
+
+How Storage Works
+
+Seeds are cleaned, dried, and packaged before being placed in cold storage,
+commonly around minus eighteen degrees Celsius for long-term collections.
+Periodically, a sample from each stored lot is germinated to confirm
+viability; if germination rates drop below a threshold, the collection is
+regrown and the seed stock refreshed. This cycle of testing and
+regeneration is what keeps a seed bank's holdings genuinely usable rather
+than merely archived.
+
+Duplication and Redundancy
+
+Because any single facility can be lost to fire, flood, equipment failure,
+or conflict, many seed banks duplicate their collections at a second site,
+sometimes in a different country or region entirely. This redundancy is
+the same logic that motivates offsite data backups: a single point of
+failure is treated as unacceptable when the material being protected
+cannot be easily replaced.
+
+Community and Local Seed Saving
+
+Alongside large institutional seed banks, informal seed-saving networks
+let farmers and gardeners exchange locally adapted varieties directly.
+These community efforts rarely have the technical storage capacity of a
+dedicated facility, but they keep seeds in active cultivation, which is
+itself a form of preservation — a variety that is grown every season stays
+adapted to present-day conditions in a way that frozen storage alone
+cannot replicate.
