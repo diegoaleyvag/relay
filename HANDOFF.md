@@ -64,6 +64,9 @@ docs/              failure semantics, diagrams, MCP boundary, threat model, ADRs
   `ctxWithClockTimeout` bridge noted in the design.
 - The control room tracks a run's scenario label in memory (best-effort), since
   `RunState` has no scenario field; after a restart older runs show "unknown".
+- Run-wide `Deadline` is checked once per loop iteration (not mid-sleep/-call),
+  so a run can overshoot by up to one backoff/`PerCallTimeout` before cancelling;
+  the production runner passes a zero deadline, so this is latent.
 - Concurrent runs share one in-memory MCP session; fine for the lab, revisit if
   scaling out.
 - CI (`.github/workflows/ci.yml`) is authored but intentionally not pushed.
