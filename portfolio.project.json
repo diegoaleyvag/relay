@@ -9,7 +9,23 @@
   "status": "building",
   "summary": "A reliability lab for checkpointed, observable agent workflows.",
   "capabilities": ["durable checkpoints", "fault injection", "human escalation"],
-  "evidence": [],
+  "evidence": [
+    {
+      "kind": "tests",
+      "description": "All six injected failure scenarios pass deterministically end-to-end (real SQLite store, MCP server, corpus).",
+      "path": "internal/engine/integration_test.go"
+    },
+    {
+      "kind": "tests",
+      "description": "A real subprocess killed after a side effect resumes to exactly one finding per source.",
+      "path": "internal/engine/restart_test.go"
+    },
+    {
+      "kind": "docs",
+      "description": "Failure-semantics table, Mermaid state/sequence diagrams, threat model and ADRs.",
+      "path": "docs/"
+    }
+  ],
   "links": {
     "repository": null,
     "demo": null,

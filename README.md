@@ -68,11 +68,29 @@ make boundary     # assert the hexagonal boundary holds
 make run          # start the control room
 ```
 
+Then open the control room at http://127.0.0.1:8080 and start a run for each
+scenario. See [`docs/DEMO.md`](docs/DEMO.md) for the five-minute walkthrough.
+
+## Documentation
+
+- [Failure semantics](docs/failure-semantics.md) — the six scenarios as a table
+- [State machine](docs/architecture/state-machine.md) — Mermaid lifecycle diagram
+- [Retry](docs/architecture/sequence-retry.md) and [resume](docs/architecture/sequence-resume.md) sequence diagrams
+- [MCP boundary](docs/mcp-boundary.md) — tools, port, transports, protocol version
+- [Threat model](docs/threat-model.md) — trust boundaries and redaction policy
+- ADRs: [deterministic planner](docs/adr/0001-deterministic-planner.md),
+  [SQLite checkpoints](docs/adr/0002-sqlite-checkpoints.md),
+  [idempotency](docs/adr/0003-idempotency.md),
+  [pure-Go driver](docs/adr/0004-pure-go-sqlite-driver.md)
+- [HANDOFF.md](HANDOFF.md) — commands, tests, changed files, known risks
+
 ## Status
 
-Building the foundation vertical slice. No live model, external browser or
-additional tools are added until the slice is reliable. See
-[`HANDOFF.md`](HANDOFF.md) once available for commands, tests and known risks.
+The foundation vertical slice is complete: the happy path and all six injected
+failure scenarios are deterministic, a real process restart resumes without
+duplicating side effects, and the HTMX control room drives everything. No live
+model, external browser or additional tools are added until the slice is
+reliable.
 
 ## Safety & privacy
 
