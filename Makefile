@@ -8,18 +8,18 @@ GOLANGCI_VERSION ?= v2.12.2
 GOBIN := $(shell $(GO) env GOPATH)/bin
 PKG := ./...
 
-# Pure-Go build (modernc.org/sqlite): no cgo, reproducible, race-detector clean.
-CGO_ENABLED ?= 0
-export CGO_ENABLED
+# Binaries build with cgo disabled: modernc.org/sqlite is pure Go, so the result
+# is a reproducible static binary. Tests keep cgo enabled (the -race detector
+# requires it); modernc works either way.
 
 .PHONY: build run tools vet test test-race cover fuzz boundary lint doc-lint tidy vendor db-reset clean help
 
 help: ## List available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n",$$1,$$2}'
 
-build: ## Build both binaries into bin/
-	$(GO) build -o bin/relay ./cmd/relay
-	$(GO) build -o bin/relay-tools ./cmd/relay-tools
+build: ## Build both binaries into bin/ (static, cgo-free)
+	CGO_ENABLED=0 $(GO) build -o bin/relay ./cmd/relay
+	CGO_ENABLED=0 $(GO) build -o bin/relay-tools ./cmd/relay-tools
 
 run: ## Run the control-room web server
 	$(GO) run ./cmd/relay
