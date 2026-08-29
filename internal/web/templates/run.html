@@ -1,7 +1,11 @@
 {{/* run.html renders the full single-run timeline page. Data: RunPage. */}}
 {{define "run"}}{{template "layout_head" .}}
-<section class="panel">
+<section class="intro compact">
+  <p class="eyebrow">Five Decisions · Run review</p>
   <h1>Run {{.RunID}}</h1>
+  <p>State and evidence below are rendered from the local control room.</p>
+</section>
+<section class="panel">
   {{template "state_panel" .State}}
 </section>
 

@@ -71,6 +71,14 @@ make run          # start the control room
 Then open the control room at http://127.0.0.1:8080 and start a run for each
 scenario. See [`docs/DEMO.md`](docs/DEMO.md) for the five-minute walkthrough.
 
+## Static Five Decisions preview
+
+`preview/` is a deterministic, static guided sample for portfolio review. It
+does not connect to Relay, show live state, start runs, or send POST requests.
+Build-check it with `make preview-build` and validate its local brand snapshot
+and project manifest with `make brand-check`. The interactive demonstration
+remains local-only: run `make run` and follow [`docs/DEMO.md`](docs/DEMO.md).
+
 ## Documentation
 
 - [Failure semantics](docs/failure-semantics.md) — the six scenarios as a table

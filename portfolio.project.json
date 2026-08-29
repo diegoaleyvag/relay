@@ -8,26 +8,39 @@
   "buildStarted": "2026-08-13",
   "status": "building",
   "summary": "A reliability lab for checkpointed, observable agent workflows.",
-  "capabilities": ["durable checkpoints", "fault injection", "human escalation"],
+  "capabilities": [
+    {
+      "label": "Durable checkpoints",
+      "detail": "Local run state survives a process restart."
+    },
+    {
+      "label": "Deterministic fault injection",
+      "detail": "Six prescribed failure scenarios make recovery behavior inspectable."
+    },
+    {
+      "label": "Human escalation",
+      "detail": "A local operator can resolve an explicit review state."
+    }
+  ],
   "evidence": [
     {
-      "kind": "tests",
+      "type": "test",
       "description": "All six injected failure scenarios pass deterministically end-to-end (real SQLite store, MCP server, corpus).",
-      "path": "internal/engine/integration_test.go"
+      "reference": "internal/engine/integration_test.go"
     },
     {
-      "kind": "tests",
+      "type": "test",
       "description": "A real subprocess killed after a side effect resumes to exactly one finding per source.",
-      "path": "internal/engine/restart_test.go"
+      "reference": "internal/engine/restart_test.go"
     },
     {
-      "kind": "docs",
+      "type": "documentation",
       "description": "Failure-semantics table, Mermaid state/sequence diagrams, threat model and ADRs.",
-      "path": "docs/"
+      "reference": "docs/"
     }
   ],
   "links": {
-    "repository": "https://github.com/diegoaleyvag/relay",
+    "repository": null,
     "demo": null,
     "methodology": null
   }

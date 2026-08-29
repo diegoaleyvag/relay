@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/portfolio/decision-manifest/v1",
+  "title": "Five Decisions project manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "collection",
+    "id",
+    "title",
+    "decision",
+    "learningOrigin",
+    "buildStarted",
+    "status",
+    "summary",
+    "capabilities",
+    "evidence",
+    "links"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "collection": {
+      "type": "string",
+      "const": "five-decisions"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "maxLength": 40
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "learningOrigin": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}$"
+    },
+    "buildStarted": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        {
+          "type": "null",
+          "nullable": true
+        }
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "building", "verified", "released"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 360
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "detail"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "detail": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240
+              },
+              {
+                "type": "null",
+                "nullable": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "description", "reference"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 320
+          },
+          "reference": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "demo", "methodology"],
+      "properties": {
+        "repository": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "format": "uri"
+            },
+            {
+              "type": "null",
+              "nullable": true
+            }
+          ]
+        },
+        "demo": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "format": "uri"
+            },
+            {
+              "type": "null",
+              "nullable": true
+            }
+          ]
+        },
+        "methodology": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "format": "uri"
+            },
+            {
+              "type": "null",
+              "nullable": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

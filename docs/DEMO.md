@@ -5,6 +5,10 @@
 Go 1.26.x. On macOS: `brew install go`. Everything runs offline against the
 module cache; no network or external services are needed.
 
+The deployable `preview/` directory is a fixed, static guided sample for
+portfolio review. It cannot send requests or represent a live run. This
+walkthrough is the local interactive demo.
+
 ## 1. Prove it works (90s)
 
 ```bash

@@ -1,0 +1,15 @@
+{
+  "source": "repos/portfolio/design",
+  "version": "1.0.0",
+  "files": {
+    "tokens": {"path": "preview/contract/five-decisions.tokens.json", "sha256": "edab728f0eb029e902a50ec8d3d5df44f99b5dd5dbcbf4a554efa1b4ffbf2668"},
+    "shell": {"path": "preview/contract/five-decisions-shell.css", "sha256": "8406b1c70038f69fcb86f01dbb3505d3ae1d2b28e3d2928e061e7a75b1ee8b70"},
+    "projectSchema": {"path": "preview/schema/portfolio.project.schema.json", "sha256": "bd6af84d9b07a61abf39319e9a1dc2e4d0c0482b022f942a5b1b350b0eab1418"}
+  },
+  "roles": ["Field", "Graphite", "Survey", "Signal"],
+  "typography": {
+    "display": "Big Shoulders Display",
+    "bodyAndUI": "Public Sans",
+    "shortLabels": "Martian Mono"
+  }
+}

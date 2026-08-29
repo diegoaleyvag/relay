@@ -1,0 +1,53 @@
+/*
+ * Five Decisions portable shell snapshot — BRAND_VERSION=1.0.0.
+ * Product adapters copy this file; the portfolio must not import it.
+ */
+
+:root {
+  --fd-field: oklch(97.4% 0.012 165);
+  --fd-field-raised: oklch(99% 0.006 165);
+  --fd-graphite: oklch(19% 0.014 256);
+  --fd-graphite-muted: oklch(46% 0.02 256);
+  --fd-survey: oklch(52% 0.135 246);
+  --fd-survey-ink: oklch(37% 0.12 248);
+  --fd-signal: oklch(61.5% 0.16 68);
+  --fd-signal-ink: oklch(40% 0.135 55);
+  --fd-font-display:
+    "Big Shoulders Display", ui-sans-serif, system-ui, sans-serif;
+  --fd-font-body: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --fd-font-mono: "Martian Mono", ui-monospace, monospace;
+  --fd-radius: 4px;
+  --fd-rule-width: 1.5px;
+}
+
+.fd-shell {
+  background: var(--fd-field);
+  color: var(--fd-graphite);
+  font-family: var(--fd-font-body);
+}
+
+.fd-shell__identity {
+  font-family: var(--fd-font-display);
+  font-weight: 800;
+}
+
+.fd-shell__label {
+  font-family: var(--fd-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fd-shell :focus-visible {
+  outline: 3px solid var(--fd-graphite);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-shell *,
+  .fd-shell *::before,
+  .fd-shell *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
