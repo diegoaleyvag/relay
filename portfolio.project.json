@@ -40,8 +40,8 @@
     },
     {
       "type": "production deployment",
-      "description": "static-only preview/**; Go/SQLite runtime not deployed. Git READY/public/smoke PASS.",
-      "reference": "https://five-decisions-relay-fby9xa47j-atomiczdaemons-projects.vercel.app/ (dpl_3hQFetRmiwtnqeEs4jyLo5SENUy3; main@503a02f0f9a42c5721aa9021535263193b2f17ee)"
+      "description": "dpl_3hQFetRmiwtnqeEs4jyLo5SENUy3; main@503a02f0f9a42c5721aa9021535263193b2f17ee; static-only preview/**; Go/SQLite runtime not deployed; Git READY/public/smoke PASS.",
+      "reference": "https://five-decisions-relay-fby9xa47j-atomiczdaemons-projects.vercel.app"
     }
   ],
   "links": {
