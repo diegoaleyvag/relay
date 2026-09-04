@@ -6,7 +6,7 @@
   "decision": "What should survive a failure?",
   "learningOrigin": "2026-07",
   "buildStarted": "2026-08-13",
-  "status": "verified",
+  "status": "released",
   "summary": "A reliability lab for checkpointed, observable agent workflows.",
   "capabilities": [
     {
@@ -37,11 +37,16 @@
       "type": "documentation",
       "description": "Failure-semantics table, Mermaid state/sequence diagrams, threat model and ADRs.",
       "reference": "docs/"
+    },
+    {
+      "type": "production deployment",
+      "description": "static-only preview/**; Go/SQLite runtime not deployed. Git READY/public/smoke PASS.",
+      "reference": "https://five-decisions-relay-fby9xa47j-atomiczdaemons-projects.vercel.app/ (dpl_3hQFetRmiwtnqeEs4jyLo5SENUy3; main@503a02f0f9a42c5721aa9021535263193b2f17ee)"
     }
   ],
   "links": {
     "repository": "https://github.com/diegoaleyvag/relay",
-    "demo": null,
+    "demo": "https://five-decisions-relay.vercel.app",
     "methodology": "https://github.com/diegoaleyvag/relay/blob/main/docs/failure-semantics.md"
   }
 }
