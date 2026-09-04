@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Static Relay documentation for local use.">
+  <title>Failure semantics | Relay preview</title>
+  <link rel="icon" href="favicon.ico" sizes="16x16" type="image/x-icon">
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+  <header>
+    <a class="brand" href="./">Relay</a>
+    <span>Five Decisions · Reliability</span>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Local documentation</p>
+      <h1>Failure semantics</h1>
+      <p class="notice"><strong>Static preview.</strong> This documentation is fixed sample content. The interactive control room remains local-only.</p>
+      <p><a href="https://diegoaleyvag.github.io/">Return to Portfolio</a> · <a href="methodology.html">Failure semantics</a> · <a href="demo.html">Local demo</a></p>
+    </section>
+    <section class="source-document" aria-label="Failure semantics source">
+      <pre># Failure semantics
+
+Every failure Relay handles falls into one of three classes, which fully
+determine the engine&#x27;s reaction:
+
+| Class | Meaning | Engine reaction |
+|-------|---------|-----------------|
+| **retryable** | transient | bounded exponential backoff, retry with the same idempotency key |
+| **skippable** | deterministic bad data | record the source as skipped, preserve partials, continue (degraded success) |
+| **terminal** | unrecoverable | fail the run, preserving all partial results |
+
+Error codes and their default classes live in
+[`internal/core/error.go`](../internal/core/error.go). Policy can reclassify
+`MALFORMED_RESPONSE` (skip vs fail) and `PERMISSION_DENIED` (fail vs escalate).
+
+## The six required scenarios
+
+Retry budget defaults: **3 attempts per step**, **5 retries per run**; backoff is
+100ms × 2ⁿ capped at 2s with deterministic full jitter.
+
+| # | Scenario | Trigger → code | Class | Retries | End state | Preserved artifacts | User-visible outcome |
+|---|----------|----------------|-------|---------|-----------|---------------------|----------------------|
+| 1 | **Tool timeout** | per-call deadline → `TIMEOUT` | retryable | ≤3/step, ≤5/run | `succeeded` if a retry wins, else `failed` (`RETRIES_EXHAUSTED`) | all prior findings, full event + transition log | &quot;Completed with N findings&quot; or &quot;Failed after retries reading source X; N partial findings retained&quot; |
+| 2 | **Malformed response** | unparseable/oversized → `MALFORMED_RESPONSE` | skippable | 0 (skip) | `succeeded` (degraded) | good-source findings; the bad source recorded in `Skipped` | &quot;Completed; 1 source unreadable (malformed), skipped&quot; |
+| 3 | **Duplicate delivery** | same request/idempotency key delivered twice | n/a | n/a | unchanged (`succeeded`) | exactly one finding per source | history shows one confirm + a `duplicate_suppressed` event |
+| 4 | **Process termination after a side effect** | crash between tool execution and the confirm checkpoint | n/a | 0 re-executions of the *durable* effect | resume → `succeeded` | the finding **exactly once**, plus a resume trail | run finishes as if the crash never happened |
+| 5 | **Permission denial** | disallowed/blocked tool → `PERMISSION_DENIED` | terminal (default; escalate optional) | 0 | `failed` (or `awaiting_human` under the escalation policy) | prior findings + an event naming the denied action | &quot;Stopped: permission denied for &amp;lt;action&amp;gt;; N findings retained&quot; |
+| 6 | **Human review required** | `request_human_review` (or the `RequireReview` policy) | n/a | n/a (bounded by the run deadline) | `running`→`succeeded` on approve; `failed` on reject; `cancelled` if the deadline passes while parked | everything; exactly one review row | &quot;Awaiting human review: &amp;lt;reason&amp;gt;&quot; then the resolved outcome |
+
+## Why exactly-once holds across a crash (scenario 4)
+
+A side effect is committed in two durable steps and reconciled on resume:
+
+1. **INTENT** — the engine commits `Pending` + a `side_effects` ledger row with
+   status `INTENT`, atomically with a checkpoint. &quot;We intend effect *K*&quot; is now
+   durable.
+2. **EXECUTE** — the tool runs (`record_finding` with idempotency key *K*).
+3. **CONFIRM** — the engine commits the durable `FindingRow` (via
+   `INSERT ... ON CONFLICT(idempotency_key) DO NOTHING`), flips the ledger to
+   `CONFIRMED`, clears `Pending`, and advances — all in one transaction.
+
+A crash between EXECUTE and CONFIRM leaves the checkpoint with `Pending` set and
+no durable finding. On restart the engine re-plans the identical step (the
+planner is pure and the idempotency key is `sha256(runID | step | tool)`,
+input-independent), re-executes, and confirms. The MCP receiver dedupes on the
+same key, and the `UNIQUE(idempotency_key)` constraint makes the durable insert
+a no-op if it already landed. The effect is therefore applied **exactly once**.
+
+The invariant is proven end-to-end by
+`TestIntegrationKillAfterEffectResumesExactlyOnce` in
+[`internal/engine/integration_test.go`](../internal/engine/integration_test.go)
+and by the process-level restart test in the same package.
+</pre>
+    </section>
+  </main>
+  <footer>Relay · static Five Decisions sample · versioned brand snapshot included</footer>
+</body>
+</html>

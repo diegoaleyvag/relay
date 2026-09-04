@@ -3,11 +3,15 @@
 import hashlib
 import json
 import re
+import struct
+import subprocess
+import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 PREVIEW = ROOT / "preview"
+STATIC_PAGES = ("index.html", "methodology.html", "demo.html")
 
 
 def require(condition, message):
@@ -76,9 +80,11 @@ def main():
     manifest = json.loads((ROOT / "portfolio.project.json").read_text())
     snapshot = json.loads((PREVIEW / "brand-contract.snapshot.json").read_text())
     schema = json.loads((PREVIEW / "schema/portfolio.project.schema.json").read_text())
-    html = (PREVIEW / "index.html").read_text().lower()
+    pages = {name: (PREVIEW / name).read_text().lower() for name in STATIC_PAGES}
+    html = pages["index.html"]
     css = (PREVIEW / "preview.css").read_text().lower()
 
+    subprocess.run([sys.executable, str(PREVIEW / "build_static_assets.py"), "--check"], check=True)
     require(snapshot["version"] == "1.0.0", "brand snapshot version must be 1.0.0")
     for name, entry in snapshot["files"].items():
         path = ROOT / entry["path"]
@@ -89,9 +95,18 @@ def main():
         validate(manifest, schema)
     except ValueError as error:
         raise SystemExit(f"brand-check: manifest schema validation failed: {error}")
-    require("<form" not in html and "method=\"post\"" not in html and "hx-post" not in html, "static preview must not contain POST controls")
+    require(all("<form" not in page and "method=\"post\"" not in page and "hx-post" not in page and "fetch(" not in page and "xmlhttprequest" not in page and "<script" not in page for page in pages.values()), "static preview must not contain runtime actions")
     require("static preview" in html and "make run" in html, "preview must disclose its limitation and local demo")
     require("public sans" in css and "martian mono" in css, "preview must declare contract typography")
+    require('href="https://diegoaleyvag.github.io/"' in html, "preview must link to the canonical Portfolio URL")
+    require('href="methodology.html"' in html and 'href="demo.html"' in html, "preview must link to deployed supporting documents")
+    require(all('href="https://diegoaleyvag.github.io/"' in page and 'href="methodology.html"' in page and 'href="demo.html"' in page for page in pages.values()), "every preview page must retain static navigation")
+    icon = (PREVIEW / "favicon.ico").read_bytes()
+    require(len(icon) >= 22 and icon[:4] == b"\x00\x00\x01\x00", "favicon must have a valid ICO header")
+    reserved, kind, count = struct.unpack("<HHH", icon[:6])
+    width, height, _, _, planes, bits, image_size, offset = struct.unpack("<BBBBHHII", icon[6:22])
+    require((reserved, kind, count) == (0, 1, 1) and (width, height, planes, bits) == (16, 16, 1, 32), "favicon must be one 16px 32-bit icon")
+    require(offset == 22 and image_size == len(icon) - offset, "favicon ICO payload must be complete")
     print("brand-check ok: vendored contract bytes and canonical manifest schema verified")
 
 

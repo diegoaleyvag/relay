@@ -67,8 +67,12 @@ doc-lint: ## Reject unsafe template types and anthropomorphic "AI reasoning" cop
 	@echo "doc-lint ok"
 
 preview-build: ## Verify the static Five Decisions preview contains only static assets
+	@python3 preview/build_static_assets.py --check
 	@test -f preview/index.html
 	@test -f preview/preview.css
+	@test -f preview/favicon.ico
+	@test -f preview/methodology.html
+	@test -f preview/demo.html
 	@test -f preview/brand-contract.snapshot.json
 	@test -f preview/schema/portfolio.project.schema.json
 	@! rg -n --glob '*.html' --glob '*.js' '(<form|method="post"|hx-post|fetch\(|XMLHttpRequest)' preview
