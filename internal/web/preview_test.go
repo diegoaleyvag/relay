@@ -20,7 +20,7 @@ func TestStaticPreviewIsClearlyLimitedAndCannotMutate(t *testing.T) {
 	for _, required := range []string{
 		"static preview",
 		"make run",
-		"hosted interactive demo is intentionally paused",
+		"this public url serves the fixed static sample only; the interactive control room remains local-only and is not deployed.",
 		`href="favicon.ico"`,
 		`href="demo.html"`,
 		`href="methodology.html"`,
