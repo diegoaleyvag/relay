@@ -1,7 +1,5 @@
-# CI gate for Relay. Authored for completeness — this repository is built and
-# reviewed locally and is NOT pushed, so this workflow documents the gate rather
-# than running remotely. It builds offline against the module cache, enforces
-# the hexagonal boundary, lints, and runs the race detector plus a fuzz smoke.
+# CI gate for Relay. Runs on push and pull_request: static build, vet, hexagonal
+# boundary, golangci-lint, race tests, and a short fuzz smoke.
 name: ci
 
 on:

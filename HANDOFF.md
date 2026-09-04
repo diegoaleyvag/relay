@@ -76,7 +76,8 @@ docs/              failure semantics, diagrams, MCP boundary, threat model, ADRs
   the production runner passes a zero deadline, so this is latent.
 - Concurrent runs share one in-memory MCP session; fine for the lab, revisit if
   scaling out.
-- CI (`.github/workflows/ci.yml`) is authored but intentionally not pushed.
+- CI (`.github/workflows/ci.yml`) runs on GitHub for `push` and
+  `pull_request` (build, vet, boundary, lint, race tests, fuzz smoke).
 
 ## Review prompts (for an independent/adversarial reviewer)
 
