@@ -20,10 +20,12 @@ func TestStaticPreviewIsClearlyLimitedAndCannotMutate(t *testing.T) {
 	for _, required := range []string{
 		"static preview",
 		"make run",
+		"hosted interactive demo is intentionally paused",
 		`href="favicon.ico"`,
 		`href="demo.html"`,
 		`href="methodology.html"`,
 		`href="https://diegoaleyvag.github.io/"`,
+		`href="https://github.com/diegoaleyvag/relay"`,
 	} {
 		if !strings.Contains(body, required) {
 			t.Errorf("static preview missing required disclosure %q", required)

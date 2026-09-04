@@ -97,6 +97,8 @@ def main():
         raise SystemExit(f"brand-check: manifest schema validation failed: {error}")
     require(all("<form" not in page and "method=\"post\"" not in page and "hx-post" not in page and "fetch(" not in page and "xmlhttprequest" not in page and "<script" not in page for page in pages.values()), "static preview must not contain runtime actions")
     require("static preview" in html and "make run" in html, "preview must disclose its limitation and local demo")
+    require('href="https://github.com/diegoaleyvag/relay"' in html, "preview must link to the repository")
+    require("hosted interactive demo is intentionally paused" in html, "preview must disclose paused hosted demo")
     require("public sans" in css and "martian mono" in css, "preview must declare contract typography")
     require('href="https://diegoaleyvag.github.io/"' in html, "preview must link to the canonical Portfolio URL")
     require('href="methodology.html"' in html and 'href="demo.html"' in html, "preview must link to deployed supporting documents")

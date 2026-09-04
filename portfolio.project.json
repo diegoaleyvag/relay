@@ -6,7 +6,7 @@
   "decision": "What should survive a failure?",
   "learningOrigin": "2026-07",
   "buildStarted": "2026-08-13",
-  "status": "building",
+  "status": "verified",
   "summary": "A reliability lab for checkpointed, observable agent workflows.",
   "capabilities": [
     {
@@ -40,8 +40,8 @@
     }
   ],
   "links": {
-    "repository": null,
+    "repository": "https://github.com/diegoaleyvag/relay",
     "demo": null,
-    "methodology": null
+    "methodology": "https://github.com/diegoaleyvag/relay/blob/main/docs/failure-semantics.md"
   }
 }
