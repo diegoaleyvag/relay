@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A static, limited Relay guided sample.">
+  <title>Relay — Five Decisions preview</title>
+  <link rel="icon" href="favicon.ico" sizes="16x16" type="image/x-icon">
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+  <header>
+    <a class="brand" href="./">Relay</a>
+    <span>Five Decisions · Reliability</span>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="question">
+      <p class="eyebrow">Guided sample</p>
+      <h1 id="question">What should survive a failure?</h1>
+      <p>Relay is a bounded reliability lab for observing how a scripted workflow preserves useful work when a known failure occurs.</p>
+      <p class="notice"><strong>Static preview.</strong> This page contains fixed sample content only. It cannot start, resume, cancel, approve, reject, or send data.</p>
+    </section>
+
+    <section aria-labelledby="walkthrough">
+      <p class="eyebrow">Walkthrough</p>
+      <h2 id="walkthrough">A timeout with a bounded retry</h2>
+      <ol class="steps">
+        <li><span>01</span><div><h3>Begin a fixed plan</h3><p>The sample lists source metadata and follows its predetermined next step.</p></div></li>
+        <li><span>02</span><div><h3>Record an injected timeout</h3><p>The failed read is labeled as a test condition, not a live operational event.</p></div></li>
+        <li><span>03</span><div><h3>Show the retry boundary</h3><p>The sample depicts a backoff state and a later successful read; it does not execute either action.</p></div></li>
+        <li><span>04</span><div><h3>Preserve the result</h3><p>The guided outcome shows one retained finding as an illustrative, static result.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="sample" aria-labelledby="sample-title">
+      <p class="eyebrow">Sample state · illustrative</p>
+      <h2 id="sample-title">Timeout recovery</h2>
+      <dl>
+        <div><dt>Phase</dt><dd>Completed sample</dd></div>
+        <div><dt>Scenario</dt><dd>Tool timeout</dd></div>
+        <div><dt>Result</dt><dd>1 retained sample finding</dd></div>
+        <div><dt>Boundary</dt><dd>Fixed content; no network actions</dd></div>
+      </dl>
+    </section>
+
+    <section class="next" aria-labelledby="local-demo">
+      <p class="eyebrow">Local demo</p>
+      <h2 id="local-demo">Run the control room locally</h2>
+      <p>For the interactive local-only demonstration, run <code>make run</code> from the Relay repository, then follow the included <a href="demo.html">local demo guide</a>.</p>
+      <p>Source code: <a href="https://github.com/diegoaleyvag/relay">github.com/diegoaleyvag/relay</a>. The hosted interactive demo is intentionally paused; there is no stable public demo URL.</p>
+    </section>
+    <section class="resources" aria-labelledby="resources">
+      <p class="eyebrow">References</p>
+      <h2 id="resources">Read the supporting material</h2>
+      <p><a href="https://diegoaleyvag.github.io/">Return to Portfolio</a> · <a href="methodology.html">Failure semantics</a> · <a href="demo.html">Local demo</a></p>
+    </section>
+  </main>
+  <footer>Relay · static Five Decisions sample · versioned brand snapshot included</footer>
+</body>
+</html>

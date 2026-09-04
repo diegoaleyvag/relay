@@ -1,0 +1,25 @@
+{
+  "brandVersion": "1.0.0",
+  "color": {
+    "field": "oklch(97.4% 0.012 165)",
+    "fieldRaised": "oklch(99% 0.006 165)",
+    "graphite": "oklch(19% 0.014 256)",
+    "graphiteMuted": "oklch(46% 0.02 256)",
+    "survey": "oklch(52% 0.135 246)",
+    "surveyInk": "oklch(37% 0.12 248)",
+    "surveySoft": "oklch(93% 0.03 246)",
+    "signal": "oklch(61.5% 0.16 68)",
+    "signalInk": "oklch(40% 0.135 55)",
+    "signalSoft": "oklch(94% 0.045 75)"
+  },
+  "font": {
+    "display": "Big Shoulders Display",
+    "body": "Public Sans",
+    "mono": "Martian Mono"
+  },
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "progressiveJavaScript": true,
+    "reducedMotion": "remove-non-essential-motion"
+  }
+}

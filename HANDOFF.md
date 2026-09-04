@@ -18,6 +18,8 @@ make boundary     # assert internal/core and internal/planner import no adapters
 make lint         # golangci-lint (installs the pinned v2.12.2 on first run)
 make doc-lint     # reject template.HTML/JS and "AI reasoning" wording
 make fuzz         # short fuzz smoke over the parsing/decoding targets
+make preview-build # verify the static Five Decisions preview contains no actions
+make brand-check  # validate the local brand snapshot and portfolio manifest
 make run          # start the control room (http://127.0.0.1:8080)
 make tools        # run the MCP tool server over stdio
 ```
@@ -57,6 +59,11 @@ docs/              failure semantics, diagrams, MCP boundary, threat model, ADRs
 
 ## Known risks / follow-ups
 
+- `preview/` is a fixed, static portfolio sample; it does not prove a live
+  control-room run. Use the local walkthrough for the interactive demonstration.
+- `preview/contract/` vendors byte-verified copies of the frozen 1.0.0 tokens
+  and shell CSS; the canonical project schema is byte-verified at
+  `preview/schema/portfolio.project.schema.json`.
 - `synchronous=NORMAL` is durable across process kill (the modelled failure) but
   not a power cut; flip to `FULL` if power-loss durability is ever in scope.
 - The per-call timeout uses a real `context.WithTimeout` (300ms); backoff uses
@@ -69,7 +76,8 @@ docs/              failure semantics, diagrams, MCP boundary, threat model, ADRs
   the production runner passes a zero deadline, so this is latent.
 - Concurrent runs share one in-memory MCP session; fine for the lab, revisit if
   scaling out.
-- CI (`.github/workflows/ci.yml`) is authored but intentionally not pushed.
+- CI (`.github/workflows/ci.yml`) runs on GitHub for `push` and
+  `pull_request` (build, vet, boundary, lint, race tests, fuzz smoke).
 
 ## Review prompts (for an independent/adversarial reviewer)
 

@@ -71,6 +71,14 @@ make run          # start the control room
 Then open the control room at http://127.0.0.1:8080 and start a run for each
 scenario. See [`docs/DEMO.md`](docs/DEMO.md) for the five-minute walkthrough.
 
+## Static Five Decisions preview
+
+`preview/` is a deterministic, static guided sample for portfolio review. It
+does not connect to Relay, show live state, start runs, or send POST requests.
+Build-check it with `make preview-build` and validate its local brand snapshot
+and project manifest with `make brand-check`. The interactive demonstration
+remains local-only: run `make run` and follow [`docs/DEMO.md`](docs/DEMO.md).
+
 ## Documentation
 
 - [Failure semantics](docs/failure-semantics.md) — the six scenarios as a table
@@ -102,5 +110,10 @@ action. See [`docs/threat-model.md`](docs/threat-model.md).
 
 ## License
 
-The official Go MCP SDK is Apache-2.0. A project license will be added before
-any publication.
+No project license is granted for Relay's own code, documentation, or other
+original material in this repository. All rights are reserved unless and until
+a license is explicitly added.
+
+Third-party components retain their own licenses. See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendored and
+dependency attribution (including htmx 2.0.4 and the Go MCP SDK).

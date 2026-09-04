@@ -1,7 +1,16 @@
 {{/* index.html renders the run list and the new-run form. Data: IndexPage. */}}
 {{define "index"}}{{template "layout_head" .}}
+<section class="intro">
+  <p class="eyebrow">Five Decisions · Reliability</p>
+  <h1>What should survive a failure?</h1>
+  <p>Relay is a local, single-operator reliability lab. Runs use a scripted, deterministic plan and make injected failure handling inspectable.</p>
+  <p class="demo-link">Local demo: run <code>make run</code>, then follow <code>docs/DEMO.md</code>.</p>
+</section>
 <section class="panel">
-  <h1>Runs</h1>
+  <div class="section-heading">
+    <p class="eyebrow">Run ledger</p>
+    <h2>Runs</h2>
+  </div>
   {{if .Runs}}
   <table class="runs">
     <thead>
@@ -31,7 +40,10 @@
 </section>
 
 <section class="panel">
-  <h2>Start a new run</h2>
+  <div class="section-heading">
+    <p class="eyebrow">Operator action</p>
+    <h2>Start a new run</h2>
+  </div>
   <form method="post" action="/runs" class="new-run">
     <label for="scenario">Scenario</label>
     <select id="scenario" name="scenario" required>

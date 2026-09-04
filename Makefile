@@ -12,7 +12,7 @@ PKG := ./...
 # is a reproducible static binary. Tests keep cgo enabled (the -race detector
 # requires it); modernc works either way.
 
-.PHONY: build run tools vet test test-race cover fuzz boundary lint doc-lint tidy vendor db-reset clean help
+.PHONY: build run tools vet test test-race cover fuzz boundary lint doc-lint preview-build brand-check tidy vendor db-reset clean help
 
 help: ## List available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n",$$1,$$2}'
@@ -65,6 +65,21 @@ doc-lint: ## Reject unsafe template types and anthropomorphic "AI reasoning" cop
 	@if grep -RIniE 'AI reasoning|the ai (thinks|decides|reasons)' internal docs 2>/dev/null; then \
 	  echo "doc-lint: the planner is scripted/deterministic — never label it as AI reasoning"; exit 1; fi
 	@echo "doc-lint ok"
+
+preview-build: ## Verify the static Five Decisions preview contains only static assets
+	@python3 preview/build_static_assets.py --check
+	@test -f preview/index.html
+	@test -f preview/preview.css
+	@test -f preview/favicon.ico
+	@test -f preview/methodology.html
+	@test -f preview/demo.html
+	@test -f preview/brand-contract.snapshot.json
+	@test -f preview/schema/portfolio.project.schema.json
+	@! rg -n --glob '*.html' --glob '*.js' '(<form|method="post"|hx-post|fetch\(|XMLHttpRequest)' preview
+	@echo "preview-build ok: static preview is ready"
+
+brand-check: ## Validate the frozen-brand snapshot and canonical manifest shapes offline
+	@python3 preview/validate.py
 
 tidy: ## go mod tidy
 	$(GO) mod tidy
