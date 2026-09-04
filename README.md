@@ -110,5 +110,10 @@ action. See [`docs/threat-model.md`](docs/threat-model.md).
 
 ## License
 
-The official Go MCP SDK is Apache-2.0. A project license will be added before
-any publication.
+No project license is granted for Relay's own code, documentation, or other
+original material in this repository. All rights are reserved unless and until
+a license is explicitly added.
+
+Third-party components retain their own licenses. See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for vendored and
+dependency attribution (including htmx 2.0.4 and the Go MCP SDK).
